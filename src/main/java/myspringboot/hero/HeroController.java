@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 // CrossOrigin을 주석해야 Postman 테스트 가능
-// @CrossOrigin(origins = "http://127.0.0.1:4200")
+@CrossOrigin(origins = "http://127.0.0.1:4200")
 @RestController
 @RequestMapping(value = "/heroes")
 public class HeroController {
@@ -41,7 +41,7 @@ public class HeroController {
 	// heroes/11
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Hero getHero(@PathVariable("id") Long id) {
-		logger.debug("상세조회 " + id);
+		logger.debug("상세조회: " + id);
 		// JAVA 8 문법 -> 람다식
 		// stream() 이후->  Hero 객체
 		// filter 조건
@@ -54,6 +54,7 @@ public class HeroController {
 	// Parameter Hero로 올때 id: null, name: [값]
 	@RequestMapping(method = RequestMethod.POST)
 	public Hero saveHero(@RequestBody Hero hero) {
+		logger.debug("등록  전: " + hero);
 		Long nextId = 0L;
 		if (this.heroes.size() != 0) {
 			// stream() 이후 -> Hero 객체
@@ -66,6 +67,7 @@ public class HeroController {
 
 		hero.setId(nextId);
 		this.heroes.add(hero);
+		logger.debug("등록  후: " + hero);
 		return hero;
 
 	}
@@ -73,6 +75,7 @@ public class HeroController {
 	// 수정 요청
 	@RequestMapping(method = RequestMethod.PUT)
 	public Hero updateHero(@RequestBody Hero hero) {
+		logger.debug("업데이트: " + hero);
 		Hero modifiedHero = this.heroes.stream().filter(u -> u.getId() == hero.getId()).findFirst().orElse(null);
 		modifiedHero.setName(hero.getName());
 		return modifiedHero;
@@ -81,8 +84,10 @@ public class HeroController {
 	// 삭제 요청
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public boolean deleteHero(@PathVariable Long id) {
+		logger.debug("삭제: " + id);
 		Hero deleteHero = this.heroes.stream().filter(Hero -> Hero.getId() == id).findFirst().orElse(null);
 		if (deleteHero != null) {
+			logger.debug("삭제된 hero : " + deleteHero);
 			this.heroes.remove(deleteHero);
 			return true;
 		} else  {
@@ -93,6 +98,7 @@ public class HeroController {
 	// 검색 요청
 	@RequestMapping(value = "/name/{name}", method = RequestMethod.GET)
 	public List<Hero> searchHeroes(@PathVariable String name) {
+		logger.debug("검색: " + name);
 		return this.heroes.stream().filter(Hero -> Hero.getName().contains(name)).collect(Collectors.toList());
 	}
 
