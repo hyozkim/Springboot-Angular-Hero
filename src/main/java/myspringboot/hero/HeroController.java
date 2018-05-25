@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +26,7 @@ public class HeroController {
 
 	private List<Hero> heroes = new ArrayList<>();	
 	
-	//private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	HeroController() {
 		buildheroes();
@@ -32,12 +34,14 @@ public class HeroController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Hero> getheroes() {
+		logger.debug("목록조회");
 		return this.heroes;
 	}
 
 	// heroes/11
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Hero getHero(@PathVariable("id") Long id) {
+		logger.debug("상세조회 " + id);
 		// JAVA 8 문법 -> 람다식
 		// stream() 이후->  Hero 객체
 		// filter 조건
